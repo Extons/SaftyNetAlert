@@ -4,7 +4,9 @@ import com.saftynetalert.saftynetalert.dto.AddressDto;
 import com.saftynetalert.saftynetalert.entities.Address;
 import com.saftynetalert.saftynetalert.repositories.AddressRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @AllArgsConstructor
@@ -21,8 +23,8 @@ public class AddressService {
             addressRepository.save(address);
 
             return address;
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "address_already_exist");
         }
-
-        return null;
     }
 }
