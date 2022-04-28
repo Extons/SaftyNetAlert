@@ -1,5 +1,6 @@
 package com.saftynetalert.saftynetalert.entities;
 
+import com.saftynetalert.saftynetalert.enums.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
