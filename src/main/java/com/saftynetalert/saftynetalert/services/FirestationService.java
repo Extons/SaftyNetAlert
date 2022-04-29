@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Service
 public class FirestationService {
@@ -20,14 +22,19 @@ public class FirestationService {
     private final StationRepository stationRepository;
     private final AddressRepository addressRepository;
 
-    public Firestation add(FirestationDto firestationDto) {
-
+    public Firestation add(FirestationDto firestationDto)
+    {
         Station station = stationRepository.findByName(firestationDto.getStation().getName()).get();
         Address address = addressRepository.findByAddressId(firestationDto.getAddress().toAddressId()).get();
 
-        boolean isFirestationExist =
-                   firestationRepository.findByStation(station).isPresent()
-                && firestationRepository.findByAddress(address).isPresent();
+        List<Firestation> allFirestations =
+                firestationRepository.findAllByAddress_AddressIdAndStation_Name(
+                        firestationDto.getAddress().toAddressId(),
+                        firestationDto.getStation().getName()
+                );
+
+        boolean isFirestationExist =  allFirestations.size() > 0;
+
 
         if (!isFirestationExist)
         {
@@ -37,12 +44,15 @@ public class FirestationService {
 
             firestationRepository.save(firestation);
             return firestation;
-        } else {
+        }
+        else
+        {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "firestation_already_exist");
         }
     }
 
-    public boolean remove(Firestation firestation) {
+    public boolean remove(Firestation firestation)
+    {
         if (firestationRepository.findById(firestation.getId()).isPresent()) {
             firestationRepository.delete(firestation);
             return true;

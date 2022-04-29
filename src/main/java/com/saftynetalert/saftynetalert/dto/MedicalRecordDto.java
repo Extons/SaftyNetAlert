@@ -5,8 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MedicalRecordDto {
-
+public class MedicalRecordDto
+{
     private String description;
-
+    private String[] medications;
+    private String[] allergies;
 }

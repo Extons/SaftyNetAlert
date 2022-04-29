@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
+
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -28,9 +30,16 @@ public class UserService {
         AddressId addressId = userDto.getAddress().toAddressId();
 
         return addressRepository.findByAddressId(addressId).map(address -> {
+
+            if(userRepository.findByEmail(userDto.getEmail()).isPresent()){
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "email_already_exist");
+            }
+
             User user = new User();
             MedicalRecord medicalRecord = new MedicalRecord();
             medicalRecord.setDescription(userDto.getMedicalRecord().getDescription());
+            medicalRecord.setMedications(Arrays.stream(userDto.getMedicalRecord().getMedications()).toList());
+            medicalRecord.setAllergies(Arrays.stream(userDto.getMedicalRecord().getAllergies()).toList());
 
             user.setFirstname(userDto.getFirstname());
             user.setLastname(userDto.getLastname());
