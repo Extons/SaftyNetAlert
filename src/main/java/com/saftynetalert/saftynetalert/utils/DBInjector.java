@@ -11,7 +11,6 @@ import com.saftynetalert.saftynetalert.services.AddressService;
 import com.saftynetalert.saftynetalert.services.FirestationService;
 import com.saftynetalert.saftynetalert.services.StationService;
 import com.saftynetalert.saftynetalert.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -80,16 +79,18 @@ public class DBInjector{
         };
     }
 
-    private static DBModel DeserializeJsonData(){
-
+    private static DBModel DeserializeJsonData()
+    {
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<DBModel> typeReference = new TypeReference<DBModel>(){};
         InputStream inputStream = TypeReference.class.getResourceAsStream("/JsonDataParser/json/data.json");
 
-        try {
+        try
+        {
             return new ObjectMapper().readValue(inputStream, typeReference);
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        catch (IOException e)
+        { e.printStackTrace();
             return null;
         }
     }
