@@ -27,4 +27,14 @@ public class AddressService {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "address_already_exist");
         }
     }
+
+    public Address GetAddress(AddressDto addressDto){
+        var address = addressRepository.findByAddressId(addressDto.toAddressId());
+        boolean isAddressExist = address.isPresent();
+        if(isAddressExist){
+            return address.get();
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "address_not_exist");
+        }
+    }
 }

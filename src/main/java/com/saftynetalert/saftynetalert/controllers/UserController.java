@@ -18,17 +18,17 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/citizen/add")
-    public User addCitizenUser(@RequestBody UserDto userDto){
+    public String addCitizenUser(@RequestBody UserDto userDto){
         return userService.AddUser(userDto, Role.CITIZEN);
     }
 
     @PostMapping("/medical/add")
-    public User addMedicalAssistUser(@RequestBody UserDto userDto){
+    public String addMedicalAssistUser(@RequestBody UserDto userDto){
         return userService.AddUser(userDto, Role.MEDICAL_ASSIST);
     }
 
     @PostMapping("/moderator/add")
-    public User addModeratorUser(@RequestBody UserDto userDto){
+    public String addModeratorUser(@RequestBody UserDto userDto){
         return userService.AddUser(userDto, Role.MODERATOR);
     }
 
