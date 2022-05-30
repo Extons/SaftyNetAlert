@@ -6,7 +6,7 @@ import com.saftynetalert.saftynetalert.dto.AddressDto;
 import com.saftynetalert.saftynetalert.dto.FirestationDto;
 import com.saftynetalert.saftynetalert.dto.StationDto;
 import com.saftynetalert.saftynetalert.dto.UserDto;
-import com.saftynetalert.saftynetalert.enums.Role;
+import com.saftynetalert.saftynetalert.entities.ERole;
 import com.saftynetalert.saftynetalert.services.AddressService;
 import com.saftynetalert.saftynetalert.services.FirestationService;
 import com.saftynetalert.saftynetalert.services.StationService;
@@ -41,7 +41,7 @@ public class DBInjector{
             int usersInjected = 0;
             for (UserDto user: dbModel.users) {
                 try{
-                    userService.AddUser(user , Role.CITIZEN);
+                    userService.AddUser(user , ERole.CITIZEN);
                     usersInjected++;
                     System.out.println("user '"+ user.getEmail() +"' Inject Success !");
                 }catch(Exception e){

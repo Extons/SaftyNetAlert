@@ -1,6 +1,5 @@
 package com.saftynetalert.saftynetalert.entities;
 
-import com.saftynetalert.saftynetalert.enums.AlertType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +19,7 @@ public class Alert {
 
     @Enumerated
     @Column(name = "alert_type")
-    private AlertType type;
+    private EAlertType type;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Firestation firestation;
