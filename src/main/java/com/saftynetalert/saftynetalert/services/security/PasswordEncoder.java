@@ -1,4 +1,4 @@
-package com.saftynetalert.saftynetalert.security;
+package com.saftynetalert.saftynetalert.services.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

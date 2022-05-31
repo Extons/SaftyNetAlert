@@ -1,4 +1,4 @@
-package com.saftynetalert.saftynetalert.security.configuration;
+package com.saftynetalert.saftynetalert.services.security.configuration;
 
 import com.saftynetalert.saftynetalert.filters.CustomAuthentificationFilter;
 import com.saftynetalert.saftynetalert.filters.CustomAuthorizationFilter;

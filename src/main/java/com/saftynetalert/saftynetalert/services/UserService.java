@@ -126,4 +126,14 @@ public class UserService implements UserDetailsService
 
         return token;
     }
+
+    public boolean DeleteByEmail(String email){
+        var user = userRepository.findByEmail(email);
+        if(user.isPresent()){
+            userRepository.delete(user.get());
+            return true;
+        }
+
+        return false;
+    }
 }
