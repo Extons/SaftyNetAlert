@@ -16,5 +16,10 @@ public class AddressDto {
     public AddressId toAddressId(){
         return new AddressId(address,  zip , city , state);
     }
-
+    public void FromAddressId(AddressId addressId){
+        address = addressId.getAddress();
+        zip = addressId.getZip();
+        city = addressId.getCity();
+        state = addressId.getState();
+    }
 }

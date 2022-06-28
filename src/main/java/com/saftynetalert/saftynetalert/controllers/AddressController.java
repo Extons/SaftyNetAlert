@@ -4,10 +4,9 @@ import com.saftynetalert.saftynetalert.dto.AddressDto;
 import com.saftynetalert.saftynetalert.entities.Address;
 import com.saftynetalert.saftynetalert.services.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/address")
@@ -19,4 +18,7 @@ public class AddressController {
     public Address Add(@RequestBody AddressDto addressDto){
         return addressService.AddAddress(addressDto);
     }
+
+    @GetMapping("/all")
+    public List<AddressDto> GetAll() { return addressService.GetAllAddresses(); }
 }

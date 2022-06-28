@@ -56,7 +56,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/api/login",
                 "/api/registration/**").permitAll();
         http.authorizeRequests().antMatchers(GET,
-                "/api/user/me").permitAll();
+                "/api/user/me",
+                "/api/address/all").permitAll();
 
         http.authorizeRequests().antMatchers(GET, "/", "/frontend/**").permitAll();
         http.authorizeRequests().antMatchers(GET, "/api/user/*").hasAnyAuthority("ROLE_USER");
