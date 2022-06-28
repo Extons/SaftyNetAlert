@@ -22,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -56,8 +57,8 @@ public class UserService implements UserDetailsService
             User user = new User();
             MedicalRecord medicalRecord = new MedicalRecord();
             medicalRecord.setDescription(userDto.getMedicalRecord().getDescription());
-            medicalRecord.setMedications(Arrays.stream(userDto.getMedicalRecord().getMedications()).toList());
-            medicalRecord.setAllergies(Arrays.stream(userDto.getMedicalRecord().getAllergies()).toList());
+            medicalRecord.setMedications(Arrays.stream(userDto.getMedicalRecord().getMedications()).collect(Collectors.toList()));
+            medicalRecord.setAllergies(Arrays.stream(userDto.getMedicalRecord().getAllergies()).collect(Collectors.toList()));
 
             String encryptedPwd = bCryptPasswordEncoder.encode(userDto.getPassword());
 

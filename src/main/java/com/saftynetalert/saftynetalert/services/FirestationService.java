@@ -1,18 +1,24 @@
 package com.saftynetalert.saftynetalert.services;
 
 import com.saftynetalert.saftynetalert.dto.FirestationDto;
+import com.saftynetalert.saftynetalert.dto.UserDto;
 import com.saftynetalert.saftynetalert.entities.Address;
 import com.saftynetalert.saftynetalert.entities.Firestation;
 import com.saftynetalert.saftynetalert.entities.Station;
+import com.saftynetalert.saftynetalert.entities.User;
 import com.saftynetalert.saftynetalert.repositories.AddressRepository;
 import com.saftynetalert.saftynetalert.repositories.FirestationRepository;
 import com.saftynetalert.saftynetalert.repositories.StationRepository;
+import com.saftynetalert.saftynetalert.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -21,6 +27,7 @@ public class FirestationService {
     private final FirestationRepository firestationRepository;
     private final StationRepository stationRepository;
     private final AddressRepository addressRepository;
+    private final UserRepository userRepository;
 
     public Firestation add(FirestationDto firestationDto)
     {
@@ -59,5 +66,28 @@ public class FirestationService {
         }
 
         return false;
+    }
+
+    public List<User> findPersonsByFirestationNumber(Long firestationNumber) {
+        Optional<Firestation> firestation =  firestationRepository.findById(firestationNumber);
+        List<User> userList = userRepository.findAll();
+        List<User> response = new ArrayList<User>();
+        int mineur = 0;
+        int majeur = 0;
+        for (var user: userList) {
+            if (firestation.isPresent() && user.getAddress().equals(firestation.get().getAddress())) {
+                response.add(user);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "firestation with id" + firestationNumber + "does not exist");
+            }
+        }
+        for (var respUser: response) {
+            if (((LocalDateTime.now().getYear()) - (respUser.getBirthdate().toLocalDate().getYear()) < 18)) {
+                mineur++;
+            } else {
+                majeur++;
+            }
+        }
+        return response;
     }
 }

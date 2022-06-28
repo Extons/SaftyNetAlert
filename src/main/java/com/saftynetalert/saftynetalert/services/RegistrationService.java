@@ -24,7 +24,7 @@ public class RegistrationService
         boolean isValidate = emailValidator.test(request.getEmail());
         if(!isValidate)
         {
-            throw new IllegalStateException("Email not invalid");
+            throw new IllegalStateException("Email is not valid");
         }
 
         Address address = addressService.GetAddress(request.getAddress());
