@@ -2,9 +2,6 @@ package com.saftynetalert.saftynetalert.registration;
 
 import com.saftynetalert.saftynetalert.dto.AddressDto;
 import com.saftynetalert.saftynetalert.dto.MedicalRecordDto;
-import com.saftynetalert.saftynetalert.entities.Address;
-import com.saftynetalert.saftynetalert.entities.AddressId;
-import com.saftynetalert.saftynetalert.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

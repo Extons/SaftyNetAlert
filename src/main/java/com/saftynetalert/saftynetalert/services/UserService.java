@@ -44,7 +44,7 @@ public class UserService implements UserDetailsService
         );
     }
 
-    public String AddUser(UserDto userDto, Role role){
+    public String AddUser(UserDto userDto, Role Role){
         AddressId addressId = userDto.getAddress().toAddressId();
 
         return addressRepository.findByAddressId(addressId).map(address -> {
@@ -69,7 +69,7 @@ public class UserService implements UserDetailsService
             user.setPassword(encryptedPwd);
             user.setMedicalRecord(medicalRecord);
             user.setAddress(address);
-            user.setRole(role);
+            user.setRole(Role);
 
             medicalRecordRepository.save(medicalRecord);
             userRepository.save(user);

@@ -2,11 +2,8 @@ package com.saftynetalert.saftynetalert.services;
 
 import com.saftynetalert.saftynetalert.dto.UserDto;
 import com.saftynetalert.saftynetalert.entities.Address;
-import com.saftynetalert.saftynetalert.entities.MedicalRecord;
-import com.saftynetalert.saftynetalert.entities.User;
 import com.saftynetalert.saftynetalert.enums.Role;
 import com.saftynetalert.saftynetalert.registration.EmailValidator;
-import com.saftynetalert.saftynetalert.registration.RegistrationRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

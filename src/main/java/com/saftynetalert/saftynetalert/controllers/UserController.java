@@ -1,7 +1,6 @@
 package com.saftynetalert.saftynetalert.controllers;
 
 import com.saftynetalert.saftynetalert.dto.UserDto;
-import com.saftynetalert.saftynetalert.entities.User;
 import com.saftynetalert.saftynetalert.enums.Role;
 import com.saftynetalert.saftynetalert.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

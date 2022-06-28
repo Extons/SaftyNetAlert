@@ -39,9 +39,9 @@ public class User implements UserDetails {
     @Column(name = "password" , nullable = false)
     private String password;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private Role role;
+    private Role Role;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Address address;
@@ -50,21 +50,21 @@ public class User implements UserDetails {
     @JoinColumn(referencedColumnName = "id" , name = "record_fk")
     private MedicalRecord medicalRecord;
 
-    public User(String firstname, String lastname, Date birthdate, String phone, String email, String password,MedicalRecord medicalRecord, Address address, Role role) {
+    public User(String firstname, String lastname, Date birthdate, String phone, String email, String password,MedicalRecord medicalRecord, Address address, Role Role) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.birthdate = birthdate;
         this.phone = phone;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.Role = Role;
         this.address = address;
         this.medicalRecord = medicalRecord;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.name());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(Role.name());
         return Collections.singleton(authority);
     }
 
