@@ -167,15 +167,21 @@ public class UserService implements UserDetailsService
     }
 
     public List<User> findUsersByFirstAndOrLastName(String firstname, String lastname) {
+        List<User> allUser = userRepository.findAll();
+        List<User> userList = new ArrayList<User>();
         if (firstname == null && lastname == null) {
             return userRepository.findAll();
         }
-        if (firstname && lastname) {
-            List<User> allUser = userRepository.findAll();
-            List<User> userList = new ArrayList<User>();
+        if (firstname != null || lastname != null) {
             for (var user:allUser) {
-                if (user.getFirstname().equalsIgnoreCase(firstname) || user.getLastname().equalsIgnoreCase(lastname))
+                if (user.getFirstname().equalsIgnoreCase(firstname) || user.getLastname().equalsIgnoreCase(lastname)) {
+                    userList.add(user);
+                }
             }
         }
+        else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "users " + firstname + " ," + lastname + " does not exist");
+        }
+        return userList;
     }
 }
