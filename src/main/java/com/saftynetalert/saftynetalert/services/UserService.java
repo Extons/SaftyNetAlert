@@ -1,6 +1,7 @@
 package com.saftynetalert.saftynetalert.services;
 
 import com.saftynetalert.saftynetalert.dto.UserDto;
+import com.saftynetalert.saftynetalert.entities.Address;
 import com.saftynetalert.saftynetalert.entities.AddressId;
 import com.saftynetalert.saftynetalert.entities.MedicalRecord;
 import com.saftynetalert.saftynetalert.entities.User;
@@ -20,8 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -136,5 +136,46 @@ public class UserService implements UserDetailsService
         }
 
         return false;
+    }
+
+    public List<User> sendChildAtAdress(String address) {
+        List<User> allUser = userRepository.findAll();
+        List<User> userList = new ArrayList<User>();
+        for (var user : allUser) {
+            if (user.getAddress().getAddressId().getAddress().equalsIgnoreCase(address) && (LocalDateTime.now().getYear() - user.getBirthdate().toLocalDate().getYear()) <= 18) {
+                userList.add(user);
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "address" + address + "does not exist");
+            }
+        }
+        return userList;
+    }
+
+    public List<String> findEmailByCity(String city) {
+        List<User> allUser = userRepository.findAll();
+        List<String> mailList = new ArrayList<String>();
+        for (var user:allUser) {
+            if (user.getAddress().getAddressId().getCity().equalsIgnoreCase(city)) {
+                mailList.add(user.getEmail());
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "city" + city + "does not exist");
+            }
+        }
+        return mailList;
+    }
+
+    public List<User> findUsersByFirstAndOrLastName(String firstname, String lastname) {
+        if (firstname == null && lastname == null) {
+            return userRepository.findAll();
+        }
+        if (firstname && lastname) {
+            List<User> allUser = userRepository.findAll();
+            List<User> userList = new ArrayList<User>();
+            for (var user:allUser) {
+                if (user.getFirstname().equalsIgnoreCase(firstname) || user.getLastname().equalsIgnoreCase(lastname))
+            }
+        }
     }
 }

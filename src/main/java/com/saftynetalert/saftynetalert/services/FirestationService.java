@@ -90,4 +90,19 @@ public class FirestationService {
         }
         return response;
     }
+
+    public List<String> findUsersPhoneByFirestationNumber(Long firestationNumber) {
+        Optional<Firestation> firestation = firestationRepository.findById(firestationNumber);
+        List<User> userList = userRepository.findAll();
+        List<String> phoneList = new ArrayList<String>();
+        for (var user:userList) {
+            if (firestation.isPresent() && user.getAddress().equals(firestation.get().getAddress())) {
+                phoneList.add(user.getPhone());
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "firestation with id" + firestationNumber + "does not exist");
+            }
+        }
+        return phoneList;
+    }
 }

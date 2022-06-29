@@ -1,14 +1,14 @@
 package com.saftynetalert.saftynetalert.controllers;
 
 import com.saftynetalert.saftynetalert.dto.UserDto;
+import com.saftynetalert.saftynetalert.entities.Address;
 import com.saftynetalert.saftynetalert.entities.User;
 import com.saftynetalert.saftynetalert.enums.Role;
 import com.saftynetalert.saftynetalert.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/person")
@@ -30,6 +30,24 @@ public class UserController {
     @PostMapping("/moderator/add")
     public String addModeratorUser(@RequestBody UserDto userDto){
         return userService.AddUser(userDto, Role.MODERATOR);
+    }
+
+    @GetMapping("/childAlerts")
+    public List<User> sendChildAtAdress(@RequestParam String address) {
+        return userService.sendChildAtAdress(address);
+    }
+
+    @GetMapping("/communityEmail")
+    public List<String> findEmailByCity(@RequestParam String city) {
+        return userService.findEmailByCity(city);
+    }
+
+    @GetMapping("/personInfo")
+    public List<User> findUsersByFirstAndOrLastName(
+            @RequestParam String firstname,
+            @RequestParam String lastname
+    ) {
+        return userService.findUsersByFirstAndOrLastName(firstname, lastname);
     }
 
 }
