@@ -142,13 +142,13 @@ public class UserService implements UserDetailsService
     public List<User> sendChildAtAddress(String address) {
         List<User> allUser = userRepository.findAll();
         List<User> userList = new ArrayList<User>();
+        int now= LocalDateTime.now().getYear();
         for (var user : allUser) {
-            if (user.getAddress().getAddressId().getAddress().equalsIgnoreCase(address)
-                    && (LocalDateTime.now().getYear() - user.getBirthdate().toLocalDate().getYear()) <= 18) {
+            int userYear = user.getBirthdate().toLocalDate().getYear();
+            boolean addressFound = user.getAddress().getAddressId().getAddress().equalsIgnoreCase(address);
+            int age = now - userYear;
+            if (addressFound && age <= 18) {
                 userList.add(user);
-            }
-            else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "address " + address + " does not exist");
             }
         }
         return userList;
@@ -176,7 +176,7 @@ public class UserService implements UserDetailsService
         }
         if (firstname != null || lastname != null) {
             for (var user:allUser) {
-                if (user.getFirstname().equalsIgnoreCase(firstname) || user.getLastname().equalsIgnoreCase(lastname)) {
+                if (user.getFirstname().equalsIgnoreCase(firstname) && user.getLastname().equalsIgnoreCase(lastname)) {
                     userList.add(user);
                 }
             }
