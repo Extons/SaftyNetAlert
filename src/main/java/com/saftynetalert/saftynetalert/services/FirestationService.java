@@ -68,7 +68,7 @@ public class FirestationService {
         return false;
     }
 
-    public List<User> findPersonsByFirestationNumber(Long stationNumber) {
+    public List<User> findPersonsByFirestationNumber(int stationNumber) {
         List<Firestation> firestationList = firestationRepository.findAll();
         List<Address> addressList = new ArrayList<Address>();
         List<User> userList = userRepository.findAll();
@@ -77,11 +77,8 @@ public class FirestationService {
         int majeur = 0;
 
         for (var firestation:firestationList) {
-            if (stationNumber != null && firestation.getStation().getId() == stationNumber) {
+            if (firestation.getStation().getId() == stationNumber) {
                 addressList.add(firestation.getAddress());
-            }
-            else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Station with id" + stationNumber + "does not exist");
             }
         }
         for (var user:userList) {
@@ -96,6 +93,10 @@ public class FirestationService {
                 majeur++;
             }
         }
+
+//        if (!stationNumber){
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Station with id" + stationNumber + "does not exist");
+//        }
         return response;
     }
 
@@ -128,15 +129,20 @@ public class FirestationService {
         Optional<Firestation> firestation = firestationRepository.findById(firestationNumber);
         List<User> userList = userRepository.findAll();
         List<String> phoneList = new ArrayList<String>();
-        for (var user:userList) {
-            if (firestation.isPresent() && user.getAddress().equals(firestation.get().getAddress())) {
-                phoneList.add(user.getPhone());
+        if (firestation.isPresent()) {
+            for (var user:userList) {
+                if ((user.getAddress().getAddressId().getAddress()).equals(firestation.get().getAddress().getAddressId().getAddress())) {
+                    phoneList.add(user.getPhone());
+                }
             }
-            else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "firestation with id" + firestationNumber + "does not exist");
-            }
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "firestation with id" + firestationNumber + "does not exist");
         }
         return phoneList;
     }
 
+    public List<Firestation> retrieveAll() {
+        return firestationRepository.findAll();
+    }
 }

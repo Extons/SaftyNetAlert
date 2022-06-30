@@ -42,4 +42,8 @@ public class StationService {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "station_not_exist");
         }
     }
+
+    public List<Station> retrieveAll() {
+        return stationRepository.findAll();
+    }
 }

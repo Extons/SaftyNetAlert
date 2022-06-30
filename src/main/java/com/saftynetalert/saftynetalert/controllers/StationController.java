@@ -17,6 +17,11 @@ public class StationController {
     @Autowired
     private StationService stationService;
 
+    @GetMapping("")
+    public List<Station> retrieveAll() {
+        return stationService.retrieveAll();
+    }
+
     @PostMapping("/add")
     public Station addStation(@RequestBody StationDto stationDto){
         return stationService.add(stationDto);
