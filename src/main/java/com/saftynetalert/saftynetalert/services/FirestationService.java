@@ -68,17 +68,25 @@ public class FirestationService {
         return false;
     }
 
-    public List<User> findPersonsByFirestationNumber(Long firestationNumber) {
-        Optional<Firestation> firestation =  firestationRepository.findById(firestationNumber);
+    public List<User> findPersonsByFirestationNumber(String stationName) {
+        List<Firestation> firestationList = firestationRepository.findAll();
+        List<Address> addressList = new ArrayList<Address>();
         List<User> userList = userRepository.findAll();
         List<User> response = new ArrayList<User>();
         int mineur = 0;
         int majeur = 0;
-        for (var user: userList) {
-            if (firestation.isPresent() && user.getAddress().equals(firestation.get().getAddress())) {
+
+        for (var firestation:firestationList) {
+            if (stationName != null && firestation.getStation().getName().equalsIgnoreCase(stationName)) {
+                addressList.add(firestation.getAddress());
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Station with name" + stationName + "does not exist");
+            }
+        }
+        for (var user:userList) {
+            if (addressList.contains(user.getAddress())) {
                 response.add(user);
-            } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "firestation with id" + firestationNumber + "does not exist");
             }
         }
         for (var respUser: response) {
@@ -90,6 +98,31 @@ public class FirestationService {
         }
         return response;
     }
+
+
+
+//    public List<User> findPersonsByFirestationNumber(Long firestationNumber) {
+//        Optional<Firestation> firestation =  firestationRepository.findById(firestationNumber);
+//        List<User> userList = userRepository.findAll();
+//        List<User> response = new ArrayList<User>();
+//        int mineur = 0;
+//        int majeur = 0;
+//        for (var user: userList) {
+//            if (firestation.isPresent() && user.getAddress().equals(firestation.get().getAddress())) {
+//                response.add(user);
+//            } else {
+//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "firestation with id" + firestationNumber + "does not exist");
+//            }
+//        }
+//        for (var respUser: response) {
+//            if (((LocalDateTime.now().getYear()) - (respUser.getBirthdate().toLocalDate().getYear()) < 18)) {
+//                mineur++;
+//            } else {
+//                majeur++;
+//            }
+//        }
+//        return response;
+//    }
 
     public List<String> findUsersPhoneByFirestationNumber(Long firestationNumber) {
         Optional<Firestation> firestation = firestationRepository.findById(firestationNumber);
@@ -105,4 +138,5 @@ public class FirestationService {
         }
         return phoneList;
     }
+
 }
