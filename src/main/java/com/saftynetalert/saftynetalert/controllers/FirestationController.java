@@ -23,6 +23,11 @@ public class FirestationController {
         return firestationService.add(firestationDto);
     }
 
+    @GetMapping("/all")
+    public List<Firestation> findAll(){
+        return firestationService.findAll();
+    }
+
     @GetMapping("/params")
     public List<User> findPersonsByStationName(@RequestParam Long stationNumber) {
         return firestationService.findPersonsByFirestationNumber(stationNumber);

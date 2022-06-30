@@ -1,7 +1,6 @@
 package com.saftynetalert.saftynetalert.controllers;
 
 import com.saftynetalert.saftynetalert.dto.UserDto;
-import com.saftynetalert.saftynetalert.entities.Address;
 import com.saftynetalert.saftynetalert.entities.User;
 import com.saftynetalert.saftynetalert.enums.Role;
 import com.saftynetalert.saftynetalert.services.UserService;
@@ -34,7 +33,7 @@ public class UserController {
 
     @GetMapping("/childAlerts")
     public List<User> sendChildAtAdress(@RequestParam String address) {
-        return userService.sendChildAtAdress(address);
+        return userService.sendChildAtAddress(address);
     }
 
     @GetMapping("/communityEmail")
