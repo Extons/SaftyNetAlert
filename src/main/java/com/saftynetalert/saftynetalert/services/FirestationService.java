@@ -29,8 +29,7 @@ public class FirestationService {
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
 
-    public Firestation add(FirestationDto firestationDto)
-    {
+    public Firestation add(FirestationDto firestationDto) {
         Station station = stationRepository.findByName(firestationDto.getStation().getName()).get();
         Address address = addressRepository.findByAddressId(firestationDto.getAddress().toAddressId()).get();
 
@@ -58,8 +57,7 @@ public class FirestationService {
         }
     }
 
-    public boolean remove(Firestation firestation)
-    {
+    public boolean remove(Firestation firestation) {
         if (firestationRepository.findById(firestation.getId()).isPresent()) {
             firestationRepository.delete(firestation);
             return true;
@@ -100,31 +98,6 @@ public class FirestationService {
         return response;
     }
 
-
-
-//    public List<User> findPersonsByFirestationNumber(Long firestationNumber) {
-//        Optional<Firestation> firestation =  firestationRepository.findById(firestationNumber);
-//        List<User> userList = userRepository.findAll();
-//        List<User> response = new ArrayList<User>();
-//        int mineur = 0;
-//        int majeur = 0;
-//        for (var user: userList) {
-//            if (firestation.isPresent() && user.getAddress().equals(firestation.get().getAddress())) {
-//                response.add(user);
-//            } else {
-//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "firestation with id" + firestationNumber + "does not exist");
-//            }
-//        }
-//        for (var respUser: response) {
-//            if (((LocalDateTime.now().getYear()) - (respUser.getBirthdate().toLocalDate().getYear()) < 18)) {
-//                mineur++;
-//            } else {
-//                majeur++;
-//            }
-//        }
-//        return response;
-//    }
-
     public List<String> findUsersPhoneByFirestationNumber(Long firestationNumber) {
         Optional<Firestation> firestation = firestationRepository.findById(firestationNumber);
         List<User> userList = userRepository.findAll();
@@ -142,7 +115,7 @@ public class FirestationService {
         return phoneList;
     }
 
-    public List<Firestation> retrieveAll() {
+    public List<Firestation> findAll() {
         return firestationRepository.findAll();
     }
 }

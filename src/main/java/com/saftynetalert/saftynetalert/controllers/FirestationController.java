@@ -23,9 +23,9 @@ public class FirestationController {
         return firestationService.add(firestationDto);
     }
 
-    @GetMapping("")
-    public List<Firestation> retrieveAll() {
-        return firestationService.retrieveAll();
+    @GetMapping("/all")
+    public List<Firestation> findAll(){
+        return firestationService.findAll();
     }
 
     @GetMapping("/params")
