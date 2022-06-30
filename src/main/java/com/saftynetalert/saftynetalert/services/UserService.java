@@ -159,9 +159,9 @@ public class UserService implements UserDetailsService
             if (user.getAddress().getAddressId().getCity().equalsIgnoreCase(city)) {
                 mailList.add(user.getEmail());
             }
-            else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "city" + city + "does not exist");
-            }
+//            else {
+//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "city" + city + "does not exist");
+//            }
         }
         return mailList;
     }
