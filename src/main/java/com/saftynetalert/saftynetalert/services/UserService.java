@@ -1,5 +1,6 @@
 package com.saftynetalert.saftynetalert.services;
 
+import com.saftynetalert.saftynetalert.dto.RegistrationSuccessDto;
 import com.saftynetalert.saftynetalert.dto.UserDto;
 import com.saftynetalert.saftynetalert.entities.AddressId;
 import com.saftynetalert.saftynetalert.entities.MedicalRecord;
@@ -44,7 +45,7 @@ public class UserService implements UserDetailsService
         );
     }
 
-    public String AddUser(UserDto userDto, Role role){
+    public RegistrationSuccessDto AddUser(UserDto userDto, Role role){
         AddressId addressId = userDto.getAddress().toAddressId();
 
         return addressRepository.findByAddressId(addressId).map(address -> {
@@ -87,7 +88,8 @@ public class UserService implements UserDetailsService
 
             // TODO : SEND EMAIL
 
-            return token;
+            //return token;
+            return new RegistrationSuccessDto(token);
         }).orElseThrow(
             () -> {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "address_not_found");

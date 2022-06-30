@@ -1,5 +1,6 @@
 package com.saftynetalert.saftynetalert.registration;
 
+import com.saftynetalert.saftynetalert.dto.RegistrationSuccessDto;
 import com.saftynetalert.saftynetalert.dto.UserDto;
 import com.saftynetalert.saftynetalert.entities.User;
 import com.saftynetalert.saftynetalert.services.RegistrationService;
@@ -14,7 +15,7 @@ public class RegistrationController {
     private RegistrationService registrationService;
 
     @PostMapping
-    public String register(@RequestBody UserDto request)
+    public RegistrationSuccessDto register(@RequestBody UserDto request)
     {
         return registrationService.register(request);
     }
