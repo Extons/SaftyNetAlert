@@ -24,8 +24,8 @@ public class FirestationController {
     }
 
     @GetMapping("/params")
-    public List<User> findPersonsByStationName(@RequestParam String stationName) {
-        return firestationService.findPersonsByFirestationNumber(stationName);
+    public List<User> findPersonsByStationName(@RequestParam Long stationNumber) {
+        return firestationService.findPersonsByFirestationNumber(stationNumber);
     }
 
     @GetMapping("/phoneAlerts")

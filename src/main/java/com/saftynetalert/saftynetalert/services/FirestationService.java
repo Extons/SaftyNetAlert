@@ -68,7 +68,7 @@ public class FirestationService {
         return false;
     }
 
-    public List<User> findPersonsByFirestationNumber(String stationName) {
+    public List<User> findPersonsByFirestationNumber(Long stationNumber) {
         List<Firestation> firestationList = firestationRepository.findAll();
         List<Address> addressList = new ArrayList<Address>();
         List<User> userList = userRepository.findAll();
@@ -77,11 +77,11 @@ public class FirestationService {
         int majeur = 0;
 
         for (var firestation:firestationList) {
-            if (stationName != null && firestation.getStation().getName().equalsIgnoreCase(stationName)) {
+            if (stationNumber != null && firestation.getStation().getId() == stationNumber) {
                 addressList.add(firestation.getAddress());
             }
             else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Station with name" + stationName + "does not exist");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Station with id" + stationNumber + "does not exist");
             }
         }
         for (var user:userList) {
