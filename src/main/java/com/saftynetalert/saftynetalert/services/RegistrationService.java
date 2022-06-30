@@ -1,5 +1,6 @@
 package com.saftynetalert.saftynetalert.services;
 
+import com.saftynetalert.saftynetalert.dto.RegistrationSuccessDto;
 import com.saftynetalert.saftynetalert.dto.UserDto;
 import com.saftynetalert.saftynetalert.entities.Address;
 import com.saftynetalert.saftynetalert.entities.MedicalRecord;
@@ -20,7 +21,7 @@ public class RegistrationService
     private final UserService userService;
     private final EmailValidator emailValidator;
 
-    public String register(@Valid UserDto request) {
+    public RegistrationSuccessDto register(@Valid UserDto request) {
         boolean isValidate = emailValidator.test(request.getEmail());
         if(!isValidate)
         {
