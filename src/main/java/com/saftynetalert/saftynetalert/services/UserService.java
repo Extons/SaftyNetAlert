@@ -118,7 +118,7 @@ public class UserService implements UserDetailsService
         ConfirmationToken confirmationToken = new ConfirmationToken(
                 token,
                 LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(15),
+                LocalDateTime.now().plusMinutes(60),
                 user
         );
 
@@ -185,5 +185,10 @@ public class UserService implements UserDetailsService
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "users " + firstname + " ," + lastname + " does not exist");
         }
         return userList;
+    }
+
+    public User findUserByMail(String mail) {
+        Optional<User> user = userRepository.findByEmail(mail);
+        return user.get();
     }
 }

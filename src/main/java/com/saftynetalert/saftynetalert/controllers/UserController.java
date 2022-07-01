@@ -50,4 +50,9 @@ public class UserController {
         return userService.findUsersByFirstAndOrLastName(firstname, lastname);
     }
 
+    @GetMapping("/getPerson")
+    public User getUserByMail(@RequestParam() String mail) {
+        return userService.findUserByMail(mail);
+    }
+
 }
