@@ -1,10 +1,12 @@
 package com.saftynetalert.saftynetalert.services;
 
+import com.saftynetalert.saftynetalert.dto.ChildDto;
 import com.saftynetalert.saftynetalert.dto.RegistrationSuccessDto;
 import com.saftynetalert.saftynetalert.dto.UserDto;
 import com.saftynetalert.saftynetalert.entities.AddressId;
 import com.saftynetalert.saftynetalert.entities.MedicalRecord;
 import com.saftynetalert.saftynetalert.entities.User;
+import com.saftynetalert.saftynetalert.entitiesDto.UserEntityDto;
 import com.saftynetalert.saftynetalert.enums.Role;
 import com.saftynetalert.saftynetalert.registration.token.ConfirmationToken;
 import com.saftynetalert.saftynetalert.registration.token.ConfirmationTokenService;
@@ -12,6 +14,7 @@ import com.saftynetalert.saftynetalert.repositories.AddressRepository;
 import com.saftynetalert.saftynetalert.repositories.MedicalRecordRepository;
 import com.saftynetalert.saftynetalert.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,6 +40,7 @@ public class UserService implements UserDetailsService
     private final AddressRepository addressRepository;
     private final ConfirmationTokenService confirmationTokenService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -139,21 +143,6 @@ public class UserService implements UserDetailsService
         return false;
     }
 
-    public List<User> sendChildAtAddress(String address) {
-        List<User> allUser = userRepository.findAll();
-        List<User> userList = new ArrayList<User>();
-        int now= LocalDateTime.now().getYear();
-        for (var user : allUser) {
-            int userYear = user.getBirthdate().toLocalDate().getYear();
-            boolean addressFound = user.getAddress().getAddressId().getAddress().equalsIgnoreCase(address);
-            int age = now - userYear;
-            if (addressFound && age <= 18) {
-                userList.add(user);
-            }
-        }
-        return userList;
-    }
-
     public List<String> findEmailByCity(String city) {
         List<User> allUser = userRepository.findAll();
         List<String> mailList = new ArrayList<String>();
@@ -190,5 +179,50 @@ public class UserService implements UserDetailsService
     public User findUserByMail(String mail) {
         Optional<User> user = userRepository.findByEmail(mail);
         return user.get();
+    }
+
+    public List<UserEntityDto> retrieveAll() {
+        List<User> userList = userRepository.findAll();
+        List<UserEntityDto> userEntityDtoList = new ArrayList<UserEntityDto>();
+        ModelMapper mapper = new ModelMapper();
+        for (var user:userList) {
+            UserEntityDto userEntityDto = mapper.map(user, UserEntityDto.class);
+            userEntityDtoList.add(userEntityDto);
+        }
+        return userEntityDtoList;
+    }
+
+
+    public Map<String, List> childAtAddress(String address) {
+        List<User> userList = userRepository.findAll();
+        List<ChildDto> childDtoList = new ArrayList<>();
+        List<ChildDto> familyDtoList = new ArrayList<>();
+        ModelMapper mapper = new ModelMapper();
+        int now= LocalDateTime.now().getYear();
+        Map<String, List> result = new HashMap<>();
+
+        for (var user:userList) {
+            int userYear = user.getBirthdate().toLocalDate().getYear();
+            boolean addressFound = user.getAddress().getAddressId().getAddress().equalsIgnoreCase(address);
+            int age = now - userYear;
+
+            if (addressFound && age <= 18){
+                Map<String, String> map = new HashMap<>();
+                ChildDto childDto = mapper.map(user, ChildDto.class);
+                childDto.setAge(age);
+                childDto.setAddress(user.getAddress().getAddressId());
+                childDtoList.add(childDto);
+                result.put("Child", childDtoList);
+            }
+
+            if (addressFound && age > 18) {
+                ChildDto familyDto = mapper.map(user, ChildDto.class);
+                familyDto.setAge(age);
+                familyDto.setAddress(user.getAddress().getAddressId());
+                familyDtoList.add(familyDto);
+                result.put("Family", familyDtoList);
+            }
+        }
+        return result;
     }
 }
