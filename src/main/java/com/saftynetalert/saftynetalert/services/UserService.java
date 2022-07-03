@@ -1,16 +1,13 @@
 package com.saftynetalert.saftynetalert.services;
 
-import com.saftynetalert.saftynetalert.dto.ChildDto;
-import com.saftynetalert.saftynetalert.dto.RegistrationSuccessDto;
-import com.saftynetalert.saftynetalert.dto.UserDto;
-import com.saftynetalert.saftynetalert.entities.AddressId;
-import com.saftynetalert.saftynetalert.entities.MedicalRecord;
-import com.saftynetalert.saftynetalert.entities.User;
+import com.saftynetalert.saftynetalert.dto.*;
+import com.saftynetalert.saftynetalert.entities.*;
 import com.saftynetalert.saftynetalert.entitiesDto.UserEntityDto;
 import com.saftynetalert.saftynetalert.enums.Role;
 import com.saftynetalert.saftynetalert.registration.token.ConfirmationToken;
 import com.saftynetalert.saftynetalert.registration.token.ConfirmationTokenService;
 import com.saftynetalert.saftynetalert.repositories.AddressRepository;
+import com.saftynetalert.saftynetalert.repositories.FirestationRepository;
 import com.saftynetalert.saftynetalert.repositories.MedicalRecordRepository;
 import com.saftynetalert.saftynetalert.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -38,6 +35,7 @@ public class UserService implements UserDetailsService
     private final UserRepository userRepository;
     private final MedicalRecordRepository medicalRecordRepository;
     private final AddressRepository addressRepository;
+    private final FirestationRepository firestationRepository;
     private final ConfirmationTokenService confirmationTokenService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -157,28 +155,30 @@ public class UserService implements UserDetailsService
         return mailList;
     }
 
-    public List<User> findUsersByFirstAndOrLastName(String firstname, String lastname) {
+    public List<UserInfoDto> findUsersByFirstAndOrLastName(String firstname, String lastname) {
         List<User> allUser = userRepository.findAll();
-        List<User> userList = new ArrayList<User>();
-        if (firstname == null && lastname == null) {
-            return userRepository.findAll();
-        }
-        if (firstname != null || lastname != null) {
-            for (var user:allUser) {
-                if (user.getFirstname().equalsIgnoreCase(firstname) && user.getLastname().equalsIgnoreCase(lastname)) {
-                    userList.add(user);
-                }
+        ModelMapper mapper = new ModelMapper();
+        List<UserInfoDto> userList = new ArrayList<>();
+
+        for (var user:allUser) {
+            UserInfoDto userInfoDto = mapper.map(user, UserInfoDto.class);
+            if (user.getFirstname().equalsIgnoreCase(firstname) && user.getLastname().equalsIgnoreCase(lastname)) {
+                userInfoDto.setAddress(user.getAddress().getAddressId());
+                userInfoDto.setAge(user.getAge());
+                userList.add(userInfoDto);
             }
         }
-        else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "users " + firstname + " ," + lastname + " does not exist");
+        if (userList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "name " + firstname + " or " + lastname + " does not exist");
         }
         return userList;
     }
 
-    public User findUserByMail(String mail) {
+    public UserEntityDto findUserByMail(String mail) {
         Optional<User> user = userRepository.findByEmail(mail);
-        return user.get();
+        ModelMapper mapper = new ModelMapper();
+        UserEntityDto userEntityDto = mapper.map(user, UserEntityDto.class);
+        return userEntityDto;
     }
 
     public List<UserEntityDto> retrieveAll() {
@@ -187,6 +187,7 @@ public class UserService implements UserDetailsService
         ModelMapper mapper = new ModelMapper();
         for (var user:userList) {
             UserEntityDto userEntityDto = mapper.map(user, UserEntityDto.class);
+            userEntityDto.setAddress(user.getAddress().getAddressId());
             userEntityDtoList.add(userEntityDto);
         }
         return userEntityDtoList;
@@ -198,31 +199,72 @@ public class UserService implements UserDetailsService
         List<ChildDto> childDtoList = new ArrayList<>();
         List<ChildDto> familyDtoList = new ArrayList<>();
         ModelMapper mapper = new ModelMapper();
-        int now= LocalDateTime.now().getYear();
         Map<String, List> result = new HashMap<>();
+        boolean hasChild = false;
 
         for (var user:userList) {
-            int userYear = user.getBirthdate().toLocalDate().getYear();
+            int age = user.getAge();
             boolean addressFound = user.getAddress().getAddressId().getAddress().equalsIgnoreCase(address);
-            int age = now - userYear;
 
             if (addressFound && age <= 18){
-                Map<String, String> map = new HashMap<>();
                 ChildDto childDto = mapper.map(user, ChildDto.class);
                 childDto.setAge(age);
-                childDto.setAddress(user.getAddress().getAddressId());
                 childDtoList.add(childDto);
-                result.put("Child", childDtoList);
+                hasChild = true;
             }
 
             if (addressFound && age > 18) {
                 ChildDto familyDto = mapper.map(user, ChildDto.class);
                 familyDto.setAge(age);
-                familyDto.setAddress(user.getAddress().getAddressId());
                 familyDtoList.add(familyDto);
-                result.put("Family", familyDtoList);
             }
+
+        }
+        result.put("Child", childDtoList);
+        if (hasChild) {
+            result.put("Adult", familyDtoList);
         }
         return result;
+    }
+
+    public List<UserForFireDto> getUserByAddress(String address) {
+        ModelMapper mapper = new ModelMapper();
+        List<UserForFireDto> listFinal = new ArrayList<>();
+        List<User> userList = userRepository.findAllByAddress_AddressId_Address(address);
+        Optional<Firestation> firestation = firestationRepository.findAllByAddress_AddressId_Address(address);
+
+        for (var user:userList) {
+            UserForFireDto userForFireDto = mapper.map(user, UserForFireDto.class);
+            userForFireDto.setFirestationInCharge(firestation.get().getStation().getId());
+            listFinal.add(userForFireDto);
+        }
+        return listFinal;
+    }
+
+    public List<Map> getByStationAndSortByAddress(Long stationId) {
+        ModelMapper mapper = new ModelMapper();
+        List<Firestation> firestationList = firestationRepository.findAllByStation_Id(stationId);
+        List<User> userList = userRepository.findAll();
+        List<Map> mapList = new ArrayList<>();
+
+        for (var firestation: firestationList) {
+            Map<String, String> addressMap = new HashMap<>();
+            addressMap.put("address", firestation.getAddress().getAddressId().getAddress());
+            addressMap.put("city", firestation.getAddress().getAddressId().getCity());
+            addressMap.put("state", firestation.getAddress().getAddressId().getState());
+            addressMap.put("zip", firestation.getAddress().getAddressId().getZip().toString());
+            List<UserDtoFlood> userDtoFloodList = new ArrayList<>();
+            Map<Map<String, String>, List<UserDtoFlood>> map = new HashMap<>();
+            for (var user:userList) {
+                if (firestation.getAddress().equals(user.getAddress())) {
+                    UserDtoFlood userDtoFlood = mapper.map(user, UserDtoFlood.class);
+                    userDtoFloodList.add(userDtoFlood);
+                }
+            }
+            map.put(addressMap, userDtoFloodList);
+            mapList.add(map);
+        }
+
+        return mapList;
     }
 }

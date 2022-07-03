@@ -2,6 +2,7 @@ package com.saftynetalert.saftynetalert.controllers;
 
 import com.saftynetalert.saftynetalert.dto.FirestationDto;
 import com.saftynetalert.saftynetalert.dto.UserDto;
+import com.saftynetalert.saftynetalert.dto.UserInfoForFirestationDto;
 import com.saftynetalert.saftynetalert.entities.Firestation;
 import com.saftynetalert.saftynetalert.entities.User;
 import com.saftynetalert.saftynetalert.services.FirestationService;
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/firestation")
@@ -29,13 +32,13 @@ public class FirestationController {
     }
 
     @GetMapping("/params")
-    public List<User> findPersonsByFirestationNumber(
-            @RequestParam() int stationNumber) {
+    public Map<String, List<Map>> findPersonsByFirestationNumber(
+            @RequestParam() Long stationNumber) {
         return firestationService.findPersonsByFirestationNumber(stationNumber);
     }
 
     @GetMapping("/phoneAlerts")
-    public List<String> findUsersPhoneByFirestationNumber(@RequestParam Long firestationNumber) {
-        return firestationService.findUsersPhoneByFirestationNumber(firestationNumber);
+    public List<String> findUsersPhoneByFirestationNumber(@RequestParam Long firestation) {
+        return firestationService.findUsersPhoneByFirestationNumber(firestation);
     }
 }

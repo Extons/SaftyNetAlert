@@ -1,9 +1,6 @@
 package com.saftynetalert.saftynetalert.controllers;
 
-import com.saftynetalert.saftynetalert.dto.ChildDto;
-import com.saftynetalert.saftynetalert.dto.RegistrationSuccessDto;
-import com.saftynetalert.saftynetalert.dto.UserDto;
-import com.saftynetalert.saftynetalert.entities.User;
+import com.saftynetalert.saftynetalert.dto.*;
 import com.saftynetalert.saftynetalert.entitiesDto.UserEntityDto;
 import com.saftynetalert.saftynetalert.enums.Role;
 import com.saftynetalert.saftynetalert.services.UserService;
@@ -12,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/person")
@@ -52,7 +48,7 @@ public class UserController {
     }
 
     @GetMapping("/personInfo")
-    public List<User> findUsersByFirstAndOrLastName(
+    public List<UserInfoDto> findUsersByFirstAndOrLastName(
             @RequestParam String firstname,
             @RequestParam String lastname
     ) {
@@ -60,8 +56,18 @@ public class UserController {
     }
 
     @GetMapping("/getPerson")
-    public User getUserByMail(@RequestParam() String mail) {
+    public UserEntityDto getUserByMail(@RequestParam() String mail) {
         return userService.findUserByMail(mail);
+    }
+
+    @GetMapping("/fire")
+    public List<UserForFireDto> getUserByAddress(@RequestParam() String address) {
+        return userService.getUserByAddress(address);
+    }
+
+    @GetMapping("/flood/station")
+    public List<Map> getByStationAndSortByAddress(@RequestParam() Long stationId) {
+        return userService.getByStationAndSortByAddress(stationId);
     }
 
 }

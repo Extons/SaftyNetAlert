@@ -8,8 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -92,4 +95,8 @@ public class User implements UserDetails {
         return true;
     }
 
+    public int getAge() {
+        int now= LocalDateTime.now().getYear();
+        return now - birthdate.toLocalDate().getYear();
+    }
 }

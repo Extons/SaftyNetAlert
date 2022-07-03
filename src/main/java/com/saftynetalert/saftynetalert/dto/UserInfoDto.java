@@ -1,58 +1,35 @@
-package com.saftynetalert.saftynetalert.entitiesDto;
+package com.saftynetalert.saftynetalert.dto;
 
-import com.saftynetalert.saftynetalert.entities.Address;
 import com.saftynetalert.saftynetalert.entities.AddressId;
 import com.saftynetalert.saftynetalert.entities.MedicalRecord;
 import com.saftynetalert.saftynetalert.enums.Role;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import javax.persistence.*;
 import java.sql.Date;
-import java.util.Collection;
-import java.util.Collections;
 
-public class UserEntityDto {
-
-    private long id;
+public class UserInfoDto {
 
     private String firstname;
 
     private String lastname;
 
-    private Date birthdate;
-
-    private String phone;
+    private int age;
 
     private String email;
-
-    private Role role;
 
     private AddressId address;
 
     private MedicalRecord medicalRecord;
 
-    public UserEntityDto() {
+    public UserInfoDto() {
     }
 
-    public UserEntityDto(long id, String firstname, String lastname, Date birthdate, String phone, String email, Role role, AddressId address, MedicalRecord medicalRecord) {
-        this.id = id;
+    public UserInfoDto(String firstname, String lastname, int age, String email, AddressId address, MedicalRecord medicalRecord) {
         this.firstname = firstname;
         this.lastname = lastname;
-        this.birthdate = birthdate;
-        this.phone = phone;
+        this.age = age;
         this.email = email;
-        this.role = role;
         this.address = address;
         this.medicalRecord = medicalRecord;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getFirstname() {
@@ -71,20 +48,12 @@ public class UserEntityDto {
         this.lastname = lastname;
     }
 
-    public Date getBirthdate() {
-        return birthdate;
+    public int getAge() {
+        return age;
     }
 
-    public void setBirthdate(Date birthdate) {
-        this.birthdate = birthdate;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public String getEmail() {
@@ -93,14 +62,6 @@ public class UserEntityDto {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public AddressId getAddress() {

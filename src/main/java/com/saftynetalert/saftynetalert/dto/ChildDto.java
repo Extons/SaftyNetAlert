@@ -16,17 +16,14 @@ public class ChildDto {
 
     private int age;
 
-    private AddressId address;
-
 
     public ChildDto() {
     }
 
-    public ChildDto(String firstname, String lastname, int age, AddressId address) {
+    public ChildDto(String firstname, String lastname, int age) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.age = age;
-        this.address = address;
     }
 
     public String getFirstname() {
@@ -53,11 +50,4 @@ public class ChildDto {
         this.age = age;
     }
 
-    public AddressId getAddress() {
-        return address;
-    }
-
-    public void setAddress(AddressId address) {
-        this.address = address;
-    }
 }

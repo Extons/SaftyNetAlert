@@ -1,7 +1,8 @@
 package com.saftynetalert.saftynetalert.services;
 
+import com.saftynetalert.saftynetalert.config.Mapper;
 import com.saftynetalert.saftynetalert.dto.FirestationDto;
-import com.saftynetalert.saftynetalert.dto.UserDto;
+import com.saftynetalert.saftynetalert.dto.UserInfoForFirestationDto;
 import com.saftynetalert.saftynetalert.entities.Address;
 import com.saftynetalert.saftynetalert.entities.Firestation;
 import com.saftynetalert.saftynetalert.entities.Station;
@@ -10,15 +11,14 @@ import com.saftynetalert.saftynetalert.repositories.AddressRepository;
 import com.saftynetalert.saftynetalert.repositories.FirestationRepository;
 import com.saftynetalert.saftynetalert.repositories.StationRepository;
 import com.saftynetalert.saftynetalert.repositories.UserRepository;
+import com.saftynetalert.saftynetalert.utilities.MapperHelper;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -66,51 +66,55 @@ public class FirestationService {
         return false;
     }
 
-    public List<User> findPersonsByFirestationNumber(int stationNumber) {
-        List<Firestation> firestationList = firestationRepository.findAll();
-        List<Address> addressList = new ArrayList<Address>();
+    public Map<String, List<Map>> findPersonsByFirestationNumber(Long stationNumber) {
+        List<Firestation> firestationList = firestationRepository.findAllByStation_Id(stationNumber);
         List<User> userList = userRepository.findAll();
-        List<User> response = new ArrayList<User>();
-        int mineur = 0;
+        List<UserInfoForFirestationDto> listResult = new ArrayList<>();
+        ModelMapper mapper = new ModelMapper();
         int majeur = 0;
+        int mineur = 0;
 
-        for (var firestation:firestationList) {
-            if (firestation.getStation().getId() == stationNumber) {
-                addressList.add(firestation.getAddress());
-            }
-        }
-        for (var user:userList) {
-            if (addressList.contains(user.getAddress())) {
-                response.add(user);
-            }
-        }
-        for (var respUser: response) {
-            if (((LocalDateTime.now().getYear()) - (respUser.getBirthdate().toLocalDate().getYear()) < 18)) {
-                mineur++;
-            } else {
-                majeur++;
-            }
-        }
+        for (var user: userList) {
+            for (var firestation: firestationList) {
+                if (user.getAddress().equals(firestation.getAddress())) {
+                    var userInfo = mapper.map(user, UserInfoForFirestationDto.class);
+                    listResult.add(userInfo);
 
-//        if (!stationNumber){
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Station with id" + stationNumber + "does not exist");
-//        }
-        return response;
+                    if (user.getAge() > 18) {
+                        majeur++;
+                    } else {
+                        mineur++;
+                    }
+                }
+            }
+        }
+        Map<String, Integer> mapAge = new HashMap<>();
+        mapAge.put("Child", mineur);
+        mapAge.put("Adult", majeur);
+        Map<String, List<UserInfoForFirestationDto>> mapUser = new HashMap<>();
+        mapUser.put("CoveredPerson", listResult);
+        Map<String, List<Map>> mapFinal = new HashMap<>();
+        List<Map>mapList = new ArrayList<>();
+        mapList.add(mapUser);
+        mapList.add(mapAge);
+        mapFinal.put("Persons", mapList);
+
+        return mapFinal;
     }
 
-    public List<String> findUsersPhoneByFirestationNumber(Long firestationNumber) {
-        Optional<Firestation> firestation = firestationRepository.findById(firestationNumber);
+    public List<String> findUsersPhoneByFirestationNumber(Long firestation) {
+        Optional<Firestation> firestationOptional = firestationRepository.findById(firestation);
         List<User> userList = userRepository.findAll();
         List<String> phoneList = new ArrayList<String>();
-        if (firestation.isPresent()) {
+        if (firestationOptional.isPresent()) {
             for (var user:userList) {
-                if ((user.getAddress().getAddressId().getAddress()).equals(firestation.get().getAddress().getAddressId().getAddress())) {
+                if ((user.getAddress().getAddressId().getAddress()).equals(firestationOptional.get().getAddress().getAddressId().getAddress())) {
                     phoneList.add(user.getPhone());
                 }
             }
         }
         else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "firestation with id" + firestationNumber + "does not exist");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "firestation with id" + firestation + "does not exist");
         }
         return phoneList;
     }
