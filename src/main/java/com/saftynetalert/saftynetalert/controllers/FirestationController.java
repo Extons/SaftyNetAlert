@@ -26,9 +26,29 @@ public class FirestationController {
         return firestationService.add(firestationDto);
     }
 
+//    @PostMapping("/add")
+//    public Firestation save(@RequestBody Firestation firestation) {
+//        return firestationService.save(firestation);
+//    }
+
     @GetMapping("/all")
     public List<Firestation> findAll(){
         return firestationService.findAll();
+    }
+
+    @GetMapping("/{firestationId}")
+    public Firestation getFirestationById(@PathVariable Long firestationId) {
+        return firestationService.getFirestationById(firestationId);
+    }
+
+    @PutMapping("/edit/{firestationId}")
+    public Firestation updateFirestation(@PathVariable Long firestationId, @RequestBody Firestation firestation) {
+        return firestationService.updateFirestation(firestationId, firestation);
+    }
+
+    @DeleteMapping("/{firestationId}")
+    public void deleteFirestation(@PathVariable Long firestationId) {
+        firestationService.deleteFirestation(firestationId);
     }
 
     @GetMapping("/params")

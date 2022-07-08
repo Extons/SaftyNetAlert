@@ -122,4 +122,39 @@ public class FirestationService {
     public List<Firestation> findAll() {
         return firestationRepository.findAll();
     }
+
+    public Firestation updateFirestation(Long firestationId, Firestation firestation) {
+        Optional<Firestation> firestationOptional = firestationRepository.findById(firestationId);
+        if (firestationOptional.isPresent()) {
+            firestationOptional.get().setStation(firestation.getStation());
+            firestationOptional.get().setAddress(firestation.getAddress());
+            firestationRepository.save(firestationOptional.get());
+        }
+        return firestationOptional.get();
+    }
+
+    public void deleteFirestation(Long firestationId) {
+        Optional<Firestation> firestation = firestationRepository.findById(firestationId);
+        if (firestation.isPresent()) {
+            firestationRepository.deleteById(firestationId);
+        }
+    }
+
+    public Firestation getFirestationById(Long firestationId) {
+        Optional<Firestation> firestation = firestationRepository.findById(firestationId);
+        return firestation.get();
+    }
+
+//    public Firestation save(Firestation firestation) {
+//        List<Firestation> firestationList = firestationRepository.findAll();
+//        for (var f:firestationList) {
+//            if (firestation.getAddress().equals(firestation.getAddress())) {
+//                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "firestation_already_exist");
+//            }
+//            else{
+//                firestationRepository.save(firestation);
+//            }
+//        }
+//        return firestation;
+//    }
 }

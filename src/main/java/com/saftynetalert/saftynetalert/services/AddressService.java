@@ -52,4 +52,8 @@ public class AddressService {
         }
         return resultList;
     }
+
+    public List<Address> retrieveAll() {
+        return addressRepository.findAll();
+    }
 }

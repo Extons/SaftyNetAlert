@@ -21,4 +21,9 @@ public class AddressController {
 
     @GetMapping("/all")
     public List<AddressDto> GetAll() { return addressService.GetAllAddresses(); }
+
+    @GetMapping("")
+    public List<Address> retrieveAll() {
+        return addressService.retrieveAll();
+    }
 }

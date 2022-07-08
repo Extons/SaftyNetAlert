@@ -267,4 +267,43 @@ public class UserService implements UserDetailsService
 
         return mapList;
     }
+
+    public UserEntityDto updateUser(Long personId, UserEntityDto userEntityDto) {
+        Optional<User> user = userRepository.findById(personId);
+        ModelMapper mapper = new ModelMapper();
+//        userEntityDto = mapper.map(user.get(), UserEntityDto.class);
+//        userRepository.save(mapper.map(userEntityDto, User.class));
+        if (user.isPresent()) {
+            user.get().setFirstname(userEntityDto.getFirstname());
+            user.get().setLastname(userEntityDto.getLastname());
+            user.get().setBirthdate(userEntityDto.getBirthdate());
+            user.get().setPhone(userEntityDto.getPhone());
+            user.get().setEmail(userEntityDto.getEmail());
+            MedicalRecord medicalRecord = new MedicalRecord();
+            medicalRecord.setDescription(userEntityDto.getMedicalRecord().getDescription());
+            medicalRecord.setMedications(userEntityDto.getMedicalRecord().getMedications());
+            medicalRecord.setAllergies(userEntityDto.getMedicalRecord().getAllergies());
+            user.get().setMedicalRecord(medicalRecord);
+            medicalRecordRepository.save(medicalRecord);
+            Address address = new Address();
+            address.setAddressId(userEntityDto.getAddress());
+            user.get().setAddress(address);
+            addressRepository.save(address);
+            user.get().setRole(userEntityDto.getRole());
+            userEntityDto = mapper.map(user.get(), UserEntityDto.class);
+            userRepository.save(user.get());
+
+        }
+        return userEntityDto;
+    }
+
+    public UserEntityDto findByPersonId(Long personId) {
+        Optional<User> user = userRepository.findById(personId);
+        ModelMapper mapper = new ModelMapper();
+        if (user.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "user_not_found");
+        }
+        UserEntityDto userEntityDto = mapper.map(user.get(), UserEntityDto.class);
+        return userEntityDto;
+    }
 }

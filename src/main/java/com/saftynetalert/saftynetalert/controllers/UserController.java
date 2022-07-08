@@ -22,6 +22,16 @@ public class UserController {
         return userService.retrieveAll();
     }
 
+    @PutMapping("/edit/{personId}")
+    public UserEntityDto updateUser(@PathVariable Long personId, @RequestBody UserEntityDto userEntityDto) {
+        return userService.updateUser(personId, userEntityDto);
+    }
+
+    @GetMapping("/{personId}")
+    public UserEntityDto findByPersonId(@PathVariable Long personId) {
+        return userService.findByPersonId(personId);
+    }
+
     @PostMapping("/citizen/add")
     public RegistrationSuccessDto addCitizenUser(@RequestBody UserDto userDto){
         return userService.AddUser(userDto, Role.CITIZEN);
