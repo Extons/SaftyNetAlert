@@ -4,8 +4,6 @@ import com.saftynetalert.saftynetalert.dto.*;
 import com.saftynetalert.saftynetalert.entities.*;
 import com.saftynetalert.saftynetalert.entitiesDto.UserEntityDto;
 import com.saftynetalert.saftynetalert.enums.Role;
-import com.saftynetalert.saftynetalert.registration.token.ConfirmationToken;
-import com.saftynetalert.saftynetalert.registration.token.ConfirmationTokenService;
 import com.saftynetalert.saftynetalert.repositories.AddressRepository;
 import com.saftynetalert.saftynetalert.repositories.FirestationRepository;
 import com.saftynetalert.saftynetalert.repositories.MedicalRecordRepository;
@@ -36,7 +34,6 @@ public class UserService implements UserDetailsService
     private final MedicalRecordRepository medicalRecordRepository;
     private final AddressRepository addressRepository;
     private final FirestationRepository firestationRepository;
-    private final ConfirmationTokenService confirmationTokenService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
@@ -79,15 +76,6 @@ public class UserService implements UserDetailsService
 
             String token = UUID.randomUUID().toString();
 
-            ConfirmationToken confirmationToken = new ConfirmationToken(
-                    token,
-                    LocalDateTime.now(),
-                    LocalDateTime.now().plusMinutes(15),
-                    user
-            );
-
-            confirmationTokenService.saveConfirmationToken(confirmationToken);
-
             // TODO : SEND EMAIL
 
             //return token;
@@ -116,15 +104,6 @@ public class UserService implements UserDetailsService
         userRepository.save(user);
 
         String token = UUID.randomUUID().toString();
-
-        ConfirmationToken confirmationToken = new ConfirmationToken(
-                token,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(60),
-                user
-        );
-
-        confirmationTokenService.saveConfirmationToken(confirmationToken);
 
         // TODO : SEND EMAIL
 
