@@ -49,7 +49,7 @@ public class User implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     private Address address;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
     @JoinColumn(referencedColumnName = "id" , name = "record_fk")
     private MedicalRecord medicalRecord;
 
