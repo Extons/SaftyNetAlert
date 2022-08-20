@@ -80,4 +80,9 @@ public class UserController {
         return userService.getByStationAndSortByAddress(stationId);
     }
 
+    @DeleteMapping("/{personId}")
+    public void delete(@PathVariable Long personId) {
+        userService.delete(personId);
+    }
+
 }

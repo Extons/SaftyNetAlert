@@ -306,4 +306,8 @@ public class UserService implements UserDetailsService
         UserEntityDto userEntityDto = mapper.map(user.get(), UserEntityDto.class);
         return userEntityDto;
     }
+
+    public void delete(Long personId) {
+        userRepository.deleteById(personId);
+    }
 }
