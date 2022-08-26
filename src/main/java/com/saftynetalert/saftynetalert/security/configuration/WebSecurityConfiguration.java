@@ -1,4 +1,4 @@
-package com.saftynetalert.saftynetalert.services.security.configuration;
+package com.saftynetalert.saftynetalert.security.configuration;
 
 import com.saftynetalert.saftynetalert.filters.CustomAuthentificationFilter;
 import com.saftynetalert.saftynetalert.filters.CustomAuthorizationFilter;
@@ -59,31 +59,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/api/user/me",
                 "/api/address/all").permitAll();
 
-        // Permit To ALL
-        http.authorizeRequests().antMatchers(GET, "/", "/**").permitAll(); // ONLY FOR TEST
-        http.authorizeRequests().antMatchers(POST, "/", "/**").permitAll(); // ONLY FOR TEST
-        // Permit To ALL
-/*
-        // GET Permit to Users
-        http.authorizeRequests().antMatchers(GET, "/api/user/*").hasAnyAuthority("ROLE_USER");
-        // GET Permit to Users
-
         http.authorizeRequests().antMatchers(GET,
-                "/api/user/**" ,
-                "/api/admin/**",
-                "/api/firestation/**")
+                "/**" )
                 .hasAnyAuthority("MODERATOR");
         http.authorizeRequests().antMatchers(POST,
-                "/api/address/add" )
+                "/**" )
                 .hasAnyAuthority("MODERATOR");
-*/
+
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthentificationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        /*http.authorizeRequests().anyRequest()
-                .authenticated().and()
-                .formLogin();*/
     }
 
     @Override
