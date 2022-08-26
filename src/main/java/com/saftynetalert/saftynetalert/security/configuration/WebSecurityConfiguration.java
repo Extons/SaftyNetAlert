@@ -58,6 +58,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(GET,
                 "/api/user/me",
                 "/api/address/all").permitAll();
+        http.authorizeRequests().antMatchers(GET,
+                "/api/firestation/**")
+                        .hasAnyAuthority("CITIZEN", "MODERATOR");
 
         http.authorizeRequests().antMatchers(GET,
                 "/**" )
